@@ -25,8 +25,7 @@ export async function login(prevState: any, formData: FormData) {
   if (role === 'organization') {
     redirect('/dashboard');
   } else {
-    // In a real app, you'd find the employee's ID and redirect to their specific page
-    redirect('/employees/1');
+    redirect('/profile');
   }
 }
 

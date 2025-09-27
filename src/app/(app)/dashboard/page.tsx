@@ -13,7 +13,7 @@ export default function DashboardPage() {
         <div className="space-y-2">
           <h1 className="text-2xl font-bold font-headline">Admin/HR Dashboard</h1>
           <p className="text-muted-foreground">
-            View reports, manage employees, and oversee operations.
+            View reports, manage employees, and oversee operations. This view is for Admin/HR roles only.
           </p>
         </div>
         <StatsCards />

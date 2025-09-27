@@ -16,7 +16,7 @@ export default function EmployeesPage() {
           <div>
             <h1 className="text-2xl font-bold font-headline">Employee Directory</h1>
             <p className="text-muted-foreground">
-              Browse, filter, and manage all employee profiles in your organization.
+              Browse, filter, and manage all employee profiles in your organization. This view is for Admin/HR roles only.
             </p>
           </div>
           <div className="ml-auto flex items-center gap-2">

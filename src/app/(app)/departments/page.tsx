@@ -12,7 +12,7 @@ export default function DepartmentsPage() {
           <div>
             <h1 className="text-2xl font-bold font-headline">Department Management</h1>
             <p className="text-muted-foreground">
-              Create, view, and manage departments to structure your organization.
+              Create, view, and manage departments to structure your organization. This view is for Admin/HR roles only.
             </p>
           </div>
           <div className="ml-auto flex items-center gap-2">
