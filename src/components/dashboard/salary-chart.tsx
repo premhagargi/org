@@ -10,10 +10,10 @@ interface SalaryChartProps {
 
 export function SalaryChart({ employees }: SalaryChartProps) {
   const salaryRanges = [
-    { name: '<$80k', range: [0, 79999] },
-    { name: '$80-100k', range: [80000, 100000] },
-    { name: '$100-120k', range: [100001, 120000] },
-    { name: '>$120k', range: [120001, Infinity] },
+    { name: '<₹60L', range: [0, 5999999] },
+    { name: '₹60-80L', range: [6000000, 8000000] },
+    { name: '₹80-1Cr', range: [8000001, 10000000] },
+    { name: '>₹1Cr', range: [10000001, Infinity] },
   ];
 
   const data = salaryRanges.map((range) => ({
@@ -27,7 +27,7 @@ export function SalaryChart({ employees }: SalaryChartProps) {
     <Card>
       <CardHeader>
         <CardTitle>Salary Distribution</CardTitle>
-        <CardDescription>Number of employees in different salary ranges.</CardDescription>
+        <CardDescription>Number of employees in different salary ranges (in INR).</CardDescription>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={350}>

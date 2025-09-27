@@ -4,7 +4,7 @@ import { employees } from '@/lib/data';
 import { AppHeader } from '@/components/app-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Mail, Phone, Briefcase, Building, DollarSign, UserCheck, UserX, FileText } from 'lucide-react';
+import { Mail, Phone, Briefcase, Building, IndianRupee, UserCheck, UserX, FileText } from 'lucide-react';
 import { FeedbackSummary } from '@/components/employees/feedback-summary';
 
 export default function EmployeeProfilePage({ params }: { params: { id: string } }) {
@@ -87,8 +87,8 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
               </CardHeader>
               <CardContent className="space-y-3">
                  <div className="flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-semibold">${employee.salary.toLocaleString()} / year</span>
+                  <IndianRupee className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-semibold">₹{employee.salary.toLocaleString('en-IN')} / year</span>
                 </div>
                  <div className="flex items-center gap-2 text-blue-600 hover:underline cursor-pointer">
                   <FileText className="h-4 w-4" />

@@ -17,7 +17,7 @@ export const employees: Employee[] = [
     department: 'Engineering',
     status: 'active',
     avatarUrl: 'https://picsum.photos/seed/1/200/200',
-    salary: 120000,
+    salary: 9500000,
     performanceReview:
       "Alice has consistently demonstrated exceptional leadership and technical skills. Her work on the flagship project was instrumental to its success. Areas for improvement include delegating more tasks to junior developers to foster their growth.",
   },
@@ -29,7 +29,7 @@ export const employees: Employee[] = [
     department: 'Marketing',
     status: 'active',
     avatarUrl: 'https://picsum.photos/seed/2/200/200',
-    salary: 95000,
+    salary: 7500000,
     performanceReview:
       "Bob's campaign strategies have significantly increased our market reach. He is a creative and effective manager. He could benefit from incorporating more data-driven analytics into his campaign planning.",
   },
@@ -41,7 +41,7 @@ export const employees: Employee[] = [
     department: 'Sales',
     status: 'active',
     avatarUrl: 'https://picsum.photos/seed/3/200/200',
-    salary: 80000,
+    salary: 6400000,
     performanceReview:
       'Charlie consistently meets and exceeds his sales targets. He has excellent client relationships. To further improve, Charlie should work on his post-sales follow-up process.',
   },
@@ -53,7 +53,7 @@ export const employees: Employee[] = [
     department: 'Human Resources',
     status: 'inactive',
     avatarUrl: 'https://picsum.photos/seed/4/200/200',
-    salary: 70000,
+    salary: 5600000,
     performanceReview:
       "Diana was a valuable member of the HR team, known for her empathy and efficiency. Her departure is a loss for the company. The feedback from her exit interview noted a desire for more growth opportunities.",
   },
@@ -65,7 +65,7 @@ export const employees: Employee[] = [
     department: 'Product',
     status: 'active',
     avatarUrl: 'https://picsum.photos/seed/5/200/200',
-    salary: 110000,
+    salary: 8800000,
     performanceReview:
       "Ethan has a strong vision for the product and excels at roadmap planning. His communication with the engineering team is effective. He could improve stakeholder management by providing more frequent updates.",
   },
@@ -77,7 +77,7 @@ export const employees: Employee[] = [
     department: 'Engineering',
     status: 'active',
     avatarUrl: 'https://picsum.photos/seed/6/200/200',
-    salary: 90000,
+    salary: 7200000,
     performanceReview:
       "Fiona is a highly skilled frontend developer who produces high-quality, clean code. She is a great team player. Fiona is encouraged to take more ownership of feature development from conception to deployment.",
   },
@@ -89,7 +89,7 @@ export const employees: Employee[] = [
     department: 'Sales',
     status: 'active',
     avatarUrl: 'https://picsum.photos/seed/7/200/200',
-    salary: 75000,
+    salary: 6000000,
     performanceReview:
       "George has shown steady improvement in his sales numbers this quarter. He is persistent and has a good sense of humor with clients. He needs to work on his organizational skills and timely reporting.",
   },
@@ -101,7 +101,7 @@ export const employees: Employee[] = [
     department: 'Product',
     status: 'active',
     avatarUrl: 'https://picsum.photos/seed/8/200/200',
-    salary: 85000,
+    salary: 6800000,
     performanceReview:
       "Hannah's designs are both beautiful and user-friendly. She takes feedback well and iterates quickly. To grow, Hannah should engage more in user research to better inform her design decisions.",
   },
@@ -113,7 +113,7 @@ export const employees: Employee[] = [
     department: 'Engineering',
     status: 'active',
     avatarUrl: 'https://picsum.photos/seed/9/200/200',
-    salary: 115000,
+    salary: 9200000,
     performanceReview:
       'Ian brings a unique and valuable perspective to our data analysis efforts. His insights have led to several key product improvements. He should focus on making his findings more accessible to non-technical stakeholders.',
   },
@@ -125,7 +125,7 @@ export const employees: Employee[] = [
     department: 'Marketing',
     status: 'inactive',
     avatarUrl: 'https://picsum.photos/seed/10/200/200',
-    salary: 78000,
+    salary: 6200000,
     performanceReview:
       "Jane's content was consistently high-quality and engaging. She was a creative force on the team. Her exit feedback mentioned a lack of clear career progression paths in her role.",
   },
