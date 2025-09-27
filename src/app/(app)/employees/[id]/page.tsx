@@ -2,9 +2,9 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { employees } from '@/lib/data';
 import { AppHeader } from '@/components/app-header';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Mail, Phone, Briefcase, Building, DollarSign, UserCheck, UserX } from 'lucide-react';
+import { Mail, Phone, Briefcase, Building, DollarSign, UserCheck, UserX, FileText } from 'lucide-react';
 import { FeedbackSummary } from '@/components/employees/feedback-summary';
 
 export default function EmployeeProfilePage({ params }: { params: { id: string } }) {
@@ -18,6 +18,12 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
     <div className="flex flex-col h-full">
       <AppHeader title="Employee Profile" />
       <main className="flex-1 p-4 md:p-8 overflow-y-auto">
+        <div className="space-y-2 mb-4">
+          <h1 className="text-2xl font-bold font-headline">Employee Dashboard</h1>
+          <p className="text-muted-foreground">
+            View your profile, track your tasks, and manage your leave.
+          </p>
+        </div>
         <div className="grid gap-8 md:grid-cols-3">
           <div className="md:col-span-1 space-y-6">
             <Card>
@@ -72,9 +78,21 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
                   <Building className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm">{employee.department}</span>
                 </div>
+              </CardContent>
+            </Card>
+             <Card>
+              <CardHeader>
+                <CardTitle>Salary Information</CardTitle>
+                <CardDescription>This is a confidential document.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
                  <div className="flex items-center gap-2">
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">${employee.salary.toLocaleString()}</span>
+                  <span className="text-sm font-semibold">${employee.salary.toLocaleString()} / year</span>
+                </div>
+                 <div className="flex items-center gap-2 text-blue-600 hover:underline cursor-pointer">
+                  <FileText className="h-4 w-4" />
+                  <span className="text-sm font-medium">View Payslip</span>
                 </div>
               </CardContent>
             </Card>

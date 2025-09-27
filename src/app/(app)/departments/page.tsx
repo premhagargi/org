@@ -11,7 +11,9 @@ export default function DepartmentsPage() {
         <div className="flex items-center">
           <div>
             <h1 className="text-2xl font-bold font-headline">Department Management</h1>
-            <p className="text-muted-foreground">Organize your company by departments.</p>
+            <p className="text-muted-foreground">
+              Create, view, and manage departments to structure your organization.
+            </p>
           </div>
           <div className="ml-auto flex items-center gap-2">
             <AddDepartmentButton />

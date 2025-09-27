@@ -1,9 +1,6 @@
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 import { AppHeader } from '@/components/app-header';
 import { EmployeeTable } from '@/components/employees/employee-table';
@@ -18,7 +15,9 @@ export default function EmployeesPage() {
         <div className="flex items-center">
           <div>
             <h1 className="text-2xl font-bold font-headline">Employee Directory</h1>
-            <p className="text-muted-foreground">Browse and manage all employees in your organization.</p>
+            <p className="text-muted-foreground">
+              Browse, filter, and manage all employee profiles in your organization.
+            </p>
           </div>
           <div className="ml-auto flex items-center gap-2">
             <AddEmployeeButton />
