@@ -21,7 +21,7 @@ export async function login(prevState: any, formData: FormData) {
     };
   }
 
-  const { email, password } = validatedFields.data;
+  const { email, password, role } = validatedFields.data;
 
   try {
     const response = await fetch('https://org-backend-499h.onrender.com/api/users/login', {
@@ -55,14 +55,10 @@ export async function login(prevState: any, formData: FormData) {
         path: '/',
       });
 
-      if (data.user.role === 'admin') {
+      if (role === 'organization') {
         redirect('/dashboard');
-      } else if (data.user.role === 'employee') {
+      } else if (role === 'employee') {
         redirect('/profile');
-      } else {
-        return {
-          error: 'Unknown user role.',
-        };
       }
     } else {
        return {
