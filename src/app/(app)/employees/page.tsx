@@ -45,6 +45,7 @@ async function getEmployees(): Promise<Employee[]> {
 
 export default async function EmployeesPage() {
   const employees = await getEmployees();
+  const token = cookies().get('token')?.value;
   
   return (
     <div className="flex flex-col h-full">
@@ -58,7 +59,7 @@ export default async function EmployeesPage() {
             </p>
           </div>
           <div className="ml-auto flex items-center gap-2">
-            <AddEmployeeButton />
+            <AddEmployeeButton token={token} />
           </div>
         </div>
         <Card>

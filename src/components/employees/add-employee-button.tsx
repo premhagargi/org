@@ -20,7 +20,6 @@ import { useToast } from '@/hooks/use-toast';
 import { createEmployee } from '@/lib/actions';
 import type { Department } from '@/lib/definitions';
 import config from '@/lib/config.json';
-import { getCookie } from 'cookies-next';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -31,7 +30,7 @@ function SubmitButton() {
   );
 }
 
-export function AddEmployeeButton() {
+export function AddEmployeeButton({ token }: { token?: string }) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -40,7 +39,6 @@ export function AddEmployeeButton() {
 
   useEffect(() => {
     async function fetchDepartments() {
-      const token = getCookie('token');
       if (!token) return;
       
       try {
@@ -51,6 +49,8 @@ export function AddEmployeeButton() {
         if (response.ok) {
           const result = await response.json();
           setDepartments(result.departments || []);
+        } else {
+           console.error('Failed to fetch departments:', response.statusText);
         }
       } catch (error) {
         console.error('Failed to fetch departments:', error);
@@ -59,7 +59,7 @@ export function AddEmployeeButton() {
     if (open) {
       fetchDepartments();
     }
-  }, [open]);
+  }, [open, token]);
 
   useEffect(() => {
     if (state?.error) {
