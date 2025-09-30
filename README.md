@@ -1,6 +1,4 @@
-# OrgHQ - Human Resource Management System
-
-This is a Next.js application built in Firebase Studio. OrgHQ is an all-in-one platform designed to help organizations manage their employees, departments, and view insightful analytics. It features a role-based system with distinct experiences for HR/Admins and regular employees.
+OrgHQ is an all-in-one platform designed to help organizations manage their employees, departments, and view insightful analytics. It features a role-based system with distinct experiences for HR/Admins and regular employees.
 
 ## Key Features
 
