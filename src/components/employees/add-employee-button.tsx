@@ -49,12 +49,12 @@ export function AddEmployeeButton() {
       if (!token) return;
       
       try {
-        const response = await fetch(`${config.apiBaseUrl}/api/employees`, {
+        const response = await fetch(`${config.apiBaseUrl}/api/departments`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (response.ok) {
           const result = await response.json();
-          setDepartments(result.data.departments || []);
+          setDepartments(result.departments || []);
         }
       } catch (error) {
         console.error('Failed to fetch departments:', error);
@@ -153,7 +153,7 @@ export function AddEmployeeButton() {
               <Input id="email" name="email" type="email" defaultValue={generatedData.email} className="col-span-3" />
             </div>
              <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-right">Password</Label>
               <Input id="password" name="password" type="password" required className="col-span-3" />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -174,7 +174,7 @@ export function AddEmployeeButton() {
               </Select>
             </div>
              <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="salary">Salary</Label>
+              <Label htmlFor="salary" className="text-right">Salary</Label>
               <Input id="salary" name="salary" type="number" defaultValue={generatedData.salary as any} required className="col-span-3" />
             </div>
           </div>
