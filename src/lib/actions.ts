@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { cookies } from 'next/headers';
+import config from './config.json';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -24,7 +25,7 @@ export async function login(prevState: any, formData: FormData) {
   const { email, password, role } = validatedFields.data;
 
   try {
-    const response = await fetch(`${process.env.API_BASE_URL}api/users/login`, {
+    const response = await fetch(`${config.apiBaseUrl}/api/users/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
