@@ -1,3 +1,4 @@
+
 OrgHQ is an all-in-one platform designed to help organizations manage their employees, departments, and view insightful analytics. It features a role-based system with distinct experiences for HR/Admins and regular employees.
 
 ## Key Features

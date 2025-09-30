@@ -9,8 +9,9 @@ import { cookies } from 'next/headers';
 import config from '@/lib/config.json';
 import { redirect } from 'next/navigation';
 import type { Employee } from '@/lib/definitions';
+import { EmployeeSearch } from '@/components/employees/employee-search';
 
-async function getEmployees(): Promise<Employee[]> {
+async function getEmployees(query: string): Promise<Employee[]> {
   const cookieStore = cookies();
   const token = cookieStore.get('token')?.value;
 
@@ -19,7 +20,11 @@ async function getEmployees(): Promise<Employee[]> {
   }
 
   try {
-    const response = await fetch(`${config.apiBaseUrl}/api/employees`, {
+    const url = new URL(`${config.apiBaseUrl}/api/employees`);
+    if (query) {
+      url.searchParams.append('q', query);
+    }
+    const response = await fetch(url.toString(), {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -43,8 +48,9 @@ async function getEmployees(): Promise<Employee[]> {
 }
 
 
-export default async function EmployeesPage() {
-  const employees = await getEmployees();
+export default async function EmployeesPage({ searchParams }: { searchParams?: { q?: string; } }) {
+  const query = searchParams?.q || '';
+  const employees = await getEmployees(query);
   const token = cookies().get('token')?.value;
   
   return (
@@ -61,6 +67,9 @@ export default async function EmployeesPage() {
           <div className="ml-auto flex items-center gap-2">
             <AddEmployeeButton token={token} />
           </div>
+        </div>
+        <div className="mb-4">
+          <EmployeeSearch placeholder="Search by name or email..." />
         </div>
         <Card>
           <CardContent className="p-0">
