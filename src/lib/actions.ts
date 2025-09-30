@@ -24,7 +24,7 @@ export async function login(prevState: any, formData: FormData) {
   const { email, password, role } = validatedFields.data;
 
   try {
-    const response = await fetch('https://org-backend-499h.onrender.com/api/users/login', {
+    const response = await fetch(`${process.env.API_BASE_URL}api/users/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
