@@ -3,15 +3,15 @@ export type Employee = {
   name: string;
   email: string;
   role: string;
-  position?: string; // Adding position as optional
+  position?: string;
   department: {
     _id: string;
     name: string;
   } | null;
   status: 'active' | 'inactive';
-  avatarUrl?: string; // Made optional as it's not in the API response
+  avatarUrl?: string; 
   salary: number;
-  performanceReview?: string; // Made optional
+  performanceReview?: string;
 };
 
 export type Department = {
