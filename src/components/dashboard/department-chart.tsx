@@ -14,6 +14,7 @@ interface DepartmentChartProps {
 }
 
 export function DepartmentChart({ departments }: DepartmentChartProps) {
+  console.log('DepartmentChart data:', departments);
   const data = departments.map((dept) => ({
     name: dept.name,
     total: dept.employeeCount,

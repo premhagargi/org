@@ -32,6 +32,7 @@ async function getDashboardData() {
     }
 
     const result = await response.json();
+    console.log('Dashboard API Response:', result);
     return result.data;
   } catch (error) {
     console.error('Error fetching dashboard data:', error);
@@ -58,6 +59,8 @@ export default async function DashboardPage() {
       </div>
      )
   }
+  
+  console.log('Data passed to dashboard components:', data);
 
   return (
     <div className="flex flex-col h-full">

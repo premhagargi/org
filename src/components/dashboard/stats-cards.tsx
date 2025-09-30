@@ -1,3 +1,5 @@
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Building, UserCheck } from 'lucide-react';
 
@@ -8,6 +10,7 @@ interface StatsCardsProps {
 }
 
 export function StatsCards({ totalEmployees, activeEmployees, totalDepartments }: StatsCardsProps) {
+  console.log('StatsCards data:', { totalEmployees, activeEmployees, totalDepartments });
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <Card>

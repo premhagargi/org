@@ -10,6 +10,7 @@ interface SalaryChartProps {
 }
 
 export function SalaryChart({ salaryDistribution }: SalaryChartProps) {
+  console.log('SalaryChart data:', salaryDistribution);
   
   const formatRange = (range: string) => {
     if (range.includes('-')) {

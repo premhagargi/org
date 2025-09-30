@@ -11,6 +11,7 @@ interface StatusChartProps {
 const COLORS = ['#16a34a', '#dc2626']; // Green for active, Red for inactive
 
 export function StatusChart({ activeCount, inactiveCount }: StatusChartProps) {
+  console.log('StatusChart data:', { activeCount, inactiveCount });
 
   const data = [
     { name: 'Active', value: activeCount },
