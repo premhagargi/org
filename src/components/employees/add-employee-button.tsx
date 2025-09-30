@@ -95,19 +95,19 @@ export function AddEmployeeButton({ token }: { token?: string }) {
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <Label htmlFor="name">Name</Label>
-              <Input id="name" name="name" />
+              <Input id="name" name="name" placeholder="e.g. John Doe" />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" name="email" type="email" />
+              <Input id="email" name="email" type="email" placeholder="e.g. john@example.com" />
             </div>
              <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" name="password" type="password" required />
+              <Input id="password" name="password" type="password" placeholder="Enter a secure password" />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="position">Position</Label>
-              <Input id="position" name="position" />
+              <Input id="position" name="position" placeholder="e.g. Software Engineer" />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="department">Department</Label>
@@ -124,7 +124,7 @@ export function AddEmployeeButton({ token }: { token?: string }) {
             </div>
              <div className="grid gap-2">
               <Label htmlFor="salary">Salary</Label>
-              <Input id="salary" name="salary" type="number" required />
+              <Input id="salary" name="salary" type="number" placeholder="e.g. 50000" />
             </div>
           </div>
           <DialogFooter>
