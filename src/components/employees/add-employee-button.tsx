@@ -86,7 +86,7 @@ export function AddEmployeeButton() {
           <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Employee</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Add Employee</DialogTitle>
           <DialogDescription>Fill in the details for the new employee.</DialogDescription>
