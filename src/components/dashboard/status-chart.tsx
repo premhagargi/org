@@ -2,17 +2,15 @@
 
 import { Pie, PieChart, ResponsiveContainer, Cell, Legend } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { Employee } from '@/lib/definitions';
 
 interface StatusChartProps {
-  employees: Employee[];
+  activeCount: number;
+  inactiveCount: number;
 }
 
 const COLORS = ['#16a34a', '#dc2626']; // Green for active, Red for inactive
 
-export function StatusChart({ employees }: StatusChartProps) {
-  const activeCount = employees.filter((e) => e.status === 'active').length;
-  const inactiveCount = employees.length - activeCount;
+export function StatusChart({ activeCount, inactiveCount }: StatusChartProps) {
 
   const data = [
     { name: 'Active', value: activeCount },

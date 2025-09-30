@@ -1,12 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Building, UserCheck } from 'lucide-react';
-import { employees, departments } from '@/lib/data';
 
-export function StatsCards() {
-  const totalEmployees = employees.length;
-  const activeEmployees = employees.filter((e) => e.status === 'active').length;
-  const totalDepartments = departments.length;
+interface StatsCardsProps {
+  totalEmployees: number;
+  activeEmployees: number;
+  totalDepartments: number;
+}
 
+export function StatsCards({ totalEmployees, activeEmployees, totalDepartments }: StatsCardsProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <Card>

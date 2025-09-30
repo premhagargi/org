@@ -2,25 +2,26 @@
 
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import type { Employee } from '@/lib/definitions';
 
 interface SalaryChartProps {
-  employees: Employee[];
+  salaryDistribution: {
+    [range: string]: number;
+  };
 }
 
-export function SalaryChart({ employees }: SalaryChartProps) {
-  const salaryRanges = [
-    { name: '<₹60L', range: [0, 5999999] },
-    { name: '₹60-80L', range: [6000000, 8000000] },
-    { name: '₹80-1Cr', range: [8000001, 10000000] },
-    { name: '>₹1Cr', range: [10000001, Infinity] },
-  ];
+export function SalaryChart({ salaryDistribution }: SalaryChartProps) {
+  
+  const formatRange = (range: string) => {
+    if (range.includes('-')) {
+      const [start, end] = range.split('-');
+      return `₹${parseInt(start) / 1000}k-₹${parseInt(end) / 1000}k`;
+    }
+    return `₹${parseInt(range) / 1000}k+`;
+  }
 
-  const data = salaryRanges.map((range) => ({
-    name: range.name,
-    total: employees.filter(
-      (emp) => emp.salary >= range.range[0] && emp.salary <= range.range[1]
-    ).length,
+  const data = Object.entries(salaryDistribution).map(([range, count]) => ({
+    name: formatRange(range),
+    total: count,
   }));
 
   return (
