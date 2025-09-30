@@ -5,9 +5,47 @@ import {
 import { AppHeader } from '@/components/app-header';
 import { EmployeeTable } from '@/components/employees/employee-table';
 import { AddEmployeeButton } from '@/components/employees/add-employee-button';
-import { employees } from '@/lib/data';
+import { cookies } from 'next/headers';
+import config from '@/lib/config.json';
+import { redirect } from 'next/navigation';
+import type { Employee } from '@/lib/definitions';
 
-export default function EmployeesPage() {
+async function getEmployees(): Promise<Employee[]> {
+  const cookieStore = cookies();
+  const token = cookieStore.get('token')?.value;
+
+  if (!token) {
+    redirect('/login');
+  }
+
+  try {
+    const response = await fetch(`${config.apiBaseUrl}/api/employees`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        redirect('/login');
+      }
+      console.error('Failed to fetch employees:', response.statusText);
+      return [];
+    }
+
+    const result = await response.json();
+    return result.data.employees || [];
+  } catch (error) {
+    console.error('Error fetching employees:', error);
+    return [];
+  }
+}
+
+
+export default async function EmployeesPage() {
+  const employees = await getEmployees();
+  
   return (
     <div className="flex flex-col h-full">
        <AppHeader title="Employees" />

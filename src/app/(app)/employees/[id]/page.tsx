@@ -1,14 +1,49 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Image from 'next/image';
-import { employees } from '@/lib/data';
 import { AppHeader } from '@/components/app-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mail, Phone, Briefcase, Building, IndianRupee, UserCheck, UserX, FileText } from 'lucide-react';
 import { FeedbackSummary } from '@/components/employees/feedback-summary';
+import { cookies } from 'next/headers';
+import config from '@/lib/config.json';
+import type { Employee } from '@/lib/definitions';
 
-export default function EmployeeProfilePage({ params }: { params: { id: string } }) {
-  const employee = employees.find((e) => e.id === params.id);
+async function getEmployee(id: string): Promise<Employee | null> {
+    const cookieStore = cookies();
+    const token = cookieStore.get('token')?.value;
+
+    if (!token) {
+        redirect('/login');
+    }
+
+    try {
+        const response = await fetch(`${config.apiBaseUrl}/api/employees/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            cache: 'no-store',
+        });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                redirect('/login');
+            }
+            console.error(`Failed to fetch employee ${id}:`, response.statusText);
+            return null;
+        }
+
+        const result = await response.json();
+        return result.data.employee || null;
+    } catch (error) {
+        console.error(`Error fetching employee ${id}:`, error);
+        return null;
+    }
+}
+
+
+export default async function EmployeeProfilePage({ params }: { params: { id: string } }) {
+  const employee = await getEmployee(params.id);
 
   if (!employee) {
     notFound();
@@ -29,7 +64,7 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
             <Card>
               <CardContent className="pt-6 flex flex-col items-center text-center">
                 <Image
-                  src={employee.avatarUrl}
+                  src={`https://picsum.photos/seed/${employee._id}/128/128`}
                   alt={employee.name}
                   width={128}
                   height={128}
@@ -76,7 +111,7 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
                 </div>
                 <div className="flex items-center gap-2">
                   <Building className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{employee.department}</span>
+                  <span className="text-sm">{employee.department?.name || 'N/A'}</span>
                 </div>
               </CardContent>
             </Card>
@@ -98,7 +133,7 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
             </Card>
           </div>
           <div className="md:col-span-2">
-            <FeedbackSummary initialFeedback={employee.performanceReview} />
+            <FeedbackSummary initialFeedback={employee.performanceReview || ''} />
           </div>
         </div>
       </main>

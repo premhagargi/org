@@ -1,16 +1,21 @@
 export type Employee = {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   role: string;
-  department: string;
+  department: {
+    _id: string;
+    name: string;
+  } | null;
   status: 'active' | 'inactive';
-  avatarUrl: string;
+  avatarUrl?: string; // Made optional as it's not in the API response
   salary: number;
-  performanceReview: string;
+  performanceReview?: string; // Made optional
 };
 
 export type Department = {
-  id: string;
+  _id: string;
   name: string;
+  description?: string;
+  employeeCount?: number;
 };

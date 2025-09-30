@@ -36,11 +36,11 @@ export function EmployeeTable({ employees }: { employees: Employee[] }) {
       </TableHeader>
       <TableBody>
         {employees.map((employee) => (
-          <TableRow key={employee.id}>
+          <TableRow key={employee._id}>
             <TableCell>
               <div className="flex items-center gap-3">
                 <Image
-                  src={employee.avatarUrl}
+                  src={`https://picsum.photos/seed/${employee._id}/40/40`}
                   alt={employee.name}
                   width={40}
                   height={40}
@@ -53,7 +53,7 @@ export function EmployeeTable({ employees }: { employees: Employee[] }) {
               </div>
             </TableCell>
             <TableCell>{employee.role}</TableCell>
-            <TableCell>{employee.department}</TableCell>
+            <TableCell>{employee.department?.name || 'N/A'}</TableCell>
             <TableCell>
               <Badge variant={employee.status === 'active' ? 'default' : 'destructive'} 
                 className={employee.status === 'active' ? 'bg-green-600' : ''}>
@@ -71,7 +71,7 @@ export function EmployeeTable({ employees }: { employees: Employee[] }) {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuItem asChild>
-                    <Link href={`/employees/${employee.id}`}>View Profile</Link>
+                    <Link href={`/employees/${employee._id}`}>View Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>Edit</DropdownMenuItem>
                 </DropdownMenuContent>
