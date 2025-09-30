@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useFormState, useFormStatus } from 'react-dom';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -21,6 +22,7 @@ function SubmitButton() {
 
 export default function LoginPage() {
   const [state, formAction] = useFormState(login, undefined);
+  const [selectedRole, setSelectedRole] = useState('organization');
 
   return (
     <div className="w-full h-full flex items-center justify-center p-4 sm:p-6 md:p-12">
@@ -33,7 +35,12 @@ export default function LoginPage() {
           <form action={formAction} className="grid gap-6">
             <div className="grid gap-3">
               <Label>Login as</Label>
-              <RadioGroup defaultValue="organization" name="role" className="grid grid-cols-2 gap-4">
+              <RadioGroup
+                defaultValue={selectedRole}
+                name="role"
+                onValueChange={setSelectedRole}
+                className="grid grid-cols-2 gap-4"
+              >
                 <div>
                   <RadioGroupItem value="organization" id="organization" className="peer sr-only" />
                   <Label
@@ -69,12 +76,14 @@ export default function LoginPage() {
             {state?.error && <p className="text-sm text-destructive">{state.error}</p>}
             <SubmitButton />
           </form>
-          <div className="mt-6 text-center text-sm">
-            Don&apos;t have an account?{' '}
-            <Link href="/register" className="underline font-medium">
-              Sign up
-            </Link>
-          </div>
+          {selectedRole === 'organization' && (
+            <div className="mt-6 text-center text-sm">
+              Don&apos;t have an account?{' '}
+              <Link href="/register" className="underline font-medium">
+                Sign up
+              </Link>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
