@@ -68,6 +68,9 @@ export async function login(prevState: any, formData: FormData) {
       };
     }
   } catch (error) {
+    if ((error as any)?.digest?.startsWith('NEXT_REDIRECT')) {
+      throw error;
+    }
     console.error('Login error:', error);
     return {
       error: 'An unexpected error occurred. Please try again.',
