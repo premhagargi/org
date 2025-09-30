@@ -2,10 +2,11 @@
 
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
+import { cookies } from 'next/headers';
 
 const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6),
+  password: z.string().min(1),
   role: z.enum(['organization', 'employee']),
 });
 
@@ -16,16 +17,63 @@ export async function login(prevState: any, formData: FormData) {
 
   if (!validatedFields.success) {
     return {
-      error: 'Invalid email, password, or role.',
+      error: 'Invalid email or password.',
     };
   }
-  
-  const { role } = validatedFields.data;
 
-  if (role === 'organization') {
-    redirect('/dashboard');
-  } else {
-    redirect('/profile');
+  const { email, password } = validatedFields.data;
+
+  try {
+    const response = await fetch('https://org-backend-499h.onrender.com/api/users/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        error: data.message || 'Login failed. Please check your credentials.',
+      };
+    }
+
+    if (data.token && data.user) {
+      cookies().set('token', data.token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24, // 1 day
+        path: '/',
+      });
+      
+      cookies().set('user', JSON.stringify(data.user), {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24, // 1 day
+        path: '/',
+      });
+
+      if (data.user.role === 'admin') {
+        redirect('/dashboard');
+      } else if (data.user.role === 'employee') {
+        redirect('/profile');
+      } else {
+        return {
+          error: 'Unknown user role.',
+        };
+      }
+    } else {
+       return {
+        error: 'Invalid response from server.',
+      };
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    return {
+      error: 'An unexpected error occurred. Please try again.',
+    };
   }
 }
 
