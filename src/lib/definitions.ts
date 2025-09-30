@@ -3,6 +3,7 @@ export type Employee = {
   name: string;
   email: string;
   role: string;
+  position?: string; // Adding position as optional
   department: {
     _id: string;
     name: string;
