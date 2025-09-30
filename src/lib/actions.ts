@@ -29,6 +29,7 @@ export async function login(prevState: any, formData: FormData) {
       headers: {
         'Content-Type': 'application/json',
       },
+      // Only send email and password to the backend
       body: JSON.stringify({ email, password }),
     });
 
@@ -55,6 +56,7 @@ export async function login(prevState: any, formData: FormData) {
         path: '/',
       });
 
+      // Use the role from the form to redirect
       if (role === 'organization') {
         redirect('/dashboard');
       } else if (role === 'employee') {
