@@ -52,7 +52,7 @@ export function EmployeeTable({ employees }: { employees: Employee[] }) {
                 </div>
               </div>
             </TableCell>
-            <TableCell>{employee.role}</TableCell>
+            <TableCell>{employee.position}</TableCell>
             <TableCell>{employee.department?.name || 'N/A'}</TableCell>
             <TableCell>
               <Badge variant={employee.status === 'active' ? 'default' : 'destructive'} 
