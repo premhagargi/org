@@ -95,6 +95,7 @@ export async function register(prevState: any, formData: FormData) {
 }
 
 export async function logout() {
-  // In a real app, you'd sign the user out here
+  cookies().delete('token');
+  cookies().delete('user');
   redirect('/login');
 }
