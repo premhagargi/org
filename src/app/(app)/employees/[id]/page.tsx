@@ -29,12 +29,15 @@ async function getEmployee(id: string): Promise<Employee | null> {
             if (response.status === 401) {
                 redirect('/login');
             }
+            if (response.status === 404) {
+                return null;
+            }
             console.error(`Failed to fetch employee ${id}:`, response.statusText);
             return null;
         }
 
         const result = await response.json();
-        return result.data.employee || null;
+        return result.employee || null;
     } catch (error) {
         console.error(`Error fetching employee ${id}:`, error);
         return null;
@@ -54,9 +57,9 @@ export default async function EmployeeProfilePage({ params }: { params: { id: st
       <AppHeader title="Employee Profile" />
       <main className="flex-1 p-4 md:p-8 overflow-y-auto">
         <div className="space-y-2 mb-4">
-          <h1 className="text-2xl font-bold font-headline">Employee Dashboard</h1>
+          <h1 className="text-2xl font-bold font-headline">Employee Profile</h1>
           <p className="text-muted-foreground">
-            View your profile, track your tasks, and manage your leave.
+            Detailed view of an employee's information.
           </p>
         </div>
         <div className="grid gap-8 md:grid-cols-3">
@@ -71,7 +74,7 @@ export default async function EmployeeProfilePage({ params }: { params: { id: st
                   className="rounded-full mb-4"
                 />
                 <h1 className="text-2xl font-bold font-headline">{employee.name}</h1>
-                <p className="text-muted-foreground">{employee.role}</p>
+                <p className="text-muted-foreground">{employee.position}</p>
                 <Badge 
                   variant={employee.status === 'active' ? 'default' : 'destructive'} 
                   className={`mt-2 ${employee.status === 'active' ? 'bg-green-600' : ''}`}
@@ -107,7 +110,7 @@ export default async function EmployeeProfilePage({ params }: { params: { id: st
               <CardContent className="space-y-3">
                  <div className="flex items-center gap-2">
                   <Briefcase className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{employee.role}</span>
+                  <span className="text-sm">{employee.position}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Building className="h-4 w-4 text-muted-foreground" />

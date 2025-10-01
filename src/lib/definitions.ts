@@ -7,6 +7,7 @@ export type Employee = {
   department: {
     _id: string;
     name: string;
+    description?: string;
   } | null;
   status: 'active' | 'inactive';
   avatarUrl?: string; 
