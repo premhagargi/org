@@ -21,3 +21,12 @@ export type Department = {
   description?: string;
   employeeCount?: number;
 };
+
+export type LeaveRequest = {
+  _id: string;
+  startDate: string;
+  endDate: string;
+  reason: string;
+  status: 'pending' | 'approved' | 'rejected';
+  createdAt: string;
+};

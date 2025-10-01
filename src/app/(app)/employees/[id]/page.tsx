@@ -8,6 +8,7 @@ import { FeedbackSummary } from '@/components/employees/feedback-summary';
 import { cookies } from 'next/headers';
 import config from '@/lib/config.json';
 import type { Employee } from '@/lib/definitions';
+import { LeaveRequestList } from '@/components/leaves/leave-request-list';
 
 async function getEmployee(id: string): Promise<Employee | null> {
     const cookieStore = cookies();
@@ -135,8 +136,9 @@ export default async function EmployeeProfilePage({ params }: { params: { id: st
               </CardContent>
             </Card>
           </div>
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 space-y-6">
             <FeedbackSummary initialFeedback={employee.performanceReview || ''} />
+            <LeaveRequestList employeeId={employee._id} isAdmin={true} />
           </div>
         </div>
       </main>

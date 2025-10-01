@@ -1,19 +1,72 @@
 import { redirect } from 'next/navigation';
 import Image from 'next/image';
-import { employees } from '@/lib/data';
 import { AppHeader } from '@/components/app-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mail, Phone, Briefcase, Building, IndianRupee, UserCheck, UserX, FileText } from 'lucide-react';
-import { FeedbackSummary } from '@/components/employees/feedback-summary';
+import { cookies } from 'next/headers';
+import type { Employee } from '@/lib/definitions';
+import config from '@/lib/config.json';
+import { LeaveRequestList } from '@/components/leaves/leave-request-list';
 
-export default function EmployeeProfilePage() {
-  // In a real app, you would get the logged-in user's ID
-  const employeeId = '1';
-  const employee = employees.find((e) => e.id === employeeId);
+async function getEmployeeProfile(): Promise<Employee | null> {
+    const cookieStore = cookies();
+    const token = cookieStore.get('token')?.value;
+    const userCookie = cookieStore.get('user')?.value;
+
+    if (!token || !userCookie) {
+        redirect('/login');
+    }
+
+    try {
+        const user = JSON.parse(userCookie);
+        const employeeId = user?._id;
+
+        if (!employeeId) {
+             redirect('/login');
+        }
+
+        const response = await fetch(`${config.apiBaseUrl}/api/employees/${employeeId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            cache: 'no-store',
+        });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                redirect('/login');
+            }
+            console.error(`Failed to fetch employee ${employeeId}:`, response.statusText);
+            return null;
+        }
+
+        const result = await response.json();
+        return result.employee || null;
+    } catch (error) {
+        console.error(`Error fetching employee:`, error);
+        redirect('/login');
+    }
+}
+
+
+export default async function EmployeeProfilePage() {
+  const employee = await getEmployeeProfile();
 
   if (!employee) {
-    redirect('/login');
+     return (
+       <div className="flex flex-col h-full">
+        <AppHeader title="My Profile" />
+        <div className="flex-1 flex items-center justify-center text-center p-4 md:p-8">
+          <div>
+             <h1 className="text-2xl font-bold font-headline">Could not load your profile</h1>
+             <p className="text-muted-foreground">
+              There was an issue connecting to the server. Please try again later.
+             </p>
+          </div>
+        </div>
+      </div>
+     )
   }
 
   return (
@@ -31,14 +84,14 @@ export default function EmployeeProfilePage() {
             <Card>
               <CardContent className="pt-6 flex flex-col items-center text-center">
                 <Image
-                  src={employee.avatarUrl}
+                  src={`https://picsum.photos/seed/${employee._id}/128/128`}
                   alt={employee.name}
                   width={128}
                   height={128}
                   className="rounded-full mb-4"
                 />
                 <h1 className="text-2xl font-bold font-headline">{employee.name}</h1>
-                <p className="text-muted-foreground">{employee.role}</p>
+                <p className="text-muted-foreground">{employee.position}</p>
                 <Badge 
                   variant={employee.status === 'active' ? 'default' : 'destructive'} 
                   className={`mt-2 ${employee.status === 'active' ? 'bg-green-600' : ''}`}
@@ -74,11 +127,11 @@ export default function EmployeeProfilePage() {
               <CardContent className="space-y-3">
                  <div className="flex items-center gap-2">
                   <Briefcase className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{employee.role}</span>
+                  <span className="text-sm">{employee.position}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Building className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{employee.department}</span>
+                  <span className="text-sm">{employee.department?.name || 'N/A'}</span>
                 </div>
               </CardContent>
             </Card>
@@ -100,7 +153,7 @@ export default function EmployeeProfilePage() {
             </Card>
           </div>
           <div className="md:col-span-2">
-            <FeedbackSummary initialFeedback={employee.performanceReview} />
+            <LeaveRequestList employeeId={employee._id} isAdmin={false} />
           </div>
         </div>
       </main>

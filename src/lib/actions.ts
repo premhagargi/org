@@ -162,3 +162,97 @@ export async function createEmployee(prevState: any, formData: FormData) {
     return { error: 'An unexpected error occurred.' };
   }
 }
+
+const createLeaveRequestSchema = z.object({
+  startDate: z.string().min(1, 'Start date is required'),
+  endDate: z.string().min(1, 'End date is required'),
+  reason: z.string().min(1, 'Reason is required'),
+});
+
+export async function createLeaveRequest(prevState: any, formData: FormData) {
+  const validatedFields = createLeaveRequestSchema.safeParse(
+    Object.fromEntries(formData.entries())
+  );
+
+  if (!validatedFields.success) {
+    return {
+      error: 'Invalid data. Please check all fields.',
+    };
+  }
+
+  const token = cookies().get('token')?.value;
+  if (!token) {
+    return { error: 'Authentication required.' };
+  }
+
+  try {
+    const response = await fetch(`${config.apiBaseUrl}/api/employees/leave-requests`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(validatedFields.data),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return { error: data.message || 'Failed to create leave request.' };
+    }
+
+    revalidatePath('/leave');
+    revalidatePath('/profile');
+    return { message: 'Leave request created successfully.' };
+  } catch (error) {
+    console.error('Create leave request error:', error);
+    return { error: 'An unexpected error occurred.' };
+  }
+}
+
+const updateLeaveStatusSchema = z.object({
+  status: z.enum(['approved', 'rejected']),
+  employeeId: z.string(),
+  leaveRequestId: z.string(),
+});
+
+export async function updateLeaveStatus(formData: FormData) {
+  const validatedFields = updateLeaveStatusSchema.safeParse(
+    Object.fromEntries(formData.entries())
+  );
+  
+  if (!validatedFields.success) {
+    console.error('Validation failed', validatedFields.error.flatten().fieldErrors);
+    return { error: 'Invalid data.' };
+  }
+  
+  const { status, employeeId, leaveRequestId } = validatedFields.data;
+  const token = cookies().get('token')?.value;
+  
+  if (!token) {
+    return { error: 'Authentication required.' };
+  }
+  
+  try {
+    const response = await fetch(`${config.apiBaseUrl}/api/employees/leave-requests/${employeeId}/${leaveRequestId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ status }),
+    });
+
+    if (!response.ok) {
+       const data = await response.json();
+       return { error: data.message || 'Failed to update leave status.' };
+    }
+    
+    revalidatePath(`/employees/${employeeId}`);
+    return { message: 'Leave status updated.' };
+
+  } catch (error) {
+     console.error('Update leave status error:', error);
+     return { error: 'An unexpected error occurred.' };
+  }
+}
