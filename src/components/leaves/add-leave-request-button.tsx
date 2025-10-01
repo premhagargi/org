@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useState, useEffect, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { addDays, format } from 'date-fns';
 import { Calendar as CalendarIcon, PlusCircle } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
@@ -42,7 +42,7 @@ export function AddLeaveRequestButton() {
     to: addDays(new Date(), 4),
   });
 
-  const [state, formAction] = useFormState(createLeaveRequest, undefined);
+  const [state, formAction] = useActionState(createLeaveRequest, undefined);
 
   useEffect(() => {
     if (state?.error) {
