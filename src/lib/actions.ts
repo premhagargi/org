@@ -359,10 +359,10 @@ export async function updateEmployee(prevState: any, formData: FormData) {
         postalCode,
         country,
       },
-      languagesSpoken: languages ? languages.split(',').map(lang => lang.trim()) : [],
+      languagesSpoken: languages ? languages.split(',').map(lang => lang.trim()) : undefined,
     },
     contacts: {
-      phone: phone ? phone.split(',').map(p => p.trim()) : [],
+      phone: phone ? phone.split(',').map(p => p.trim()) : undefined,
       emergencyContact: {
         name: emergencyContactName,
         relationship: emergencyContactRelationship,
