@@ -40,6 +40,7 @@ async function getDepartments(): Promise<Department[]> {
 
 export default async function DepartmentsPage() {
   const departments = await getDepartments();
+  const token = cookies().get('token')?.value;
 
   return (
     <div className="flex flex-col h-full">
