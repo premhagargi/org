@@ -8,7 +8,7 @@ import type { Department } from '@/lib/definitions';
 
 async function getDepartments(): Promise<Department[]> {
   const cookieStore = cookies();
-  const token = cookieStore.get('token')?.value;
+  const token = (await cookieStore).get('token')?.value;
 
   if (!token) redirect('/login');
 
