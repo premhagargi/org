@@ -10,22 +10,16 @@ async function getDepartments(): Promise<Department[]> {
   const cookieStore = cookies();
   const token = cookieStore.get('token')?.value;
 
-  if (!token) {
-    redirect('/login');
-  }
+  if (!token) redirect('/login');
 
   try {
     const response = await fetch(`${config.apiBaseUrl}/api/departments`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
       cache: 'no-store',
     });
 
     if (!response.ok) {
-      if (response.status === 401) {
-        redirect('/login');
-      }
+      if (response.status === 401) redirect('/login');
       console.error('Failed to fetch departments:', response.statusText);
       return [];
     }
@@ -40,7 +34,6 @@ async function getDepartments(): Promise<Department[]> {
 
 export default async function DepartmentsPage() {
   const departments = await getDepartments();
-  const token = cookies().get('token')?.value;
 
   return (
     <div className="flex flex-col h-full">
