@@ -44,25 +44,22 @@ export async function login(prevState: any, formData: FormData) {
 
     if (data.token && data.user) {
       const cookieStore = cookies();
-      cookieStore.set('token', data.token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24, // 1 day
-        path: '/',
-      });
-      
-      // The user object from the API has an 'id' field, not '_id'.
-      // The API response for employee login is {"user": {"id": "..."}}
-      // We will store this and reference it as `user.id` in our server components.
-      // For admin login, the API returns `user._id`.
       const userToStore = data.user.id ? { ...data.user, _id: data.user.id } : data.user;
-
-      cookieStore.set('user', JSON.stringify(userToStore), {
+      
+      const cookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 60 * 60 * 24, // 1 day
         path: '/',
-      });
+      };
+
+      if (role === 'organization') {
+        cookieStore.set('token', data.token, cookieOptions);
+        cookieStore.set('user', JSON.stringify(userToStore), cookieOptions);
+      } else {
+        cookieStore.set('employee_token', data.token, cookieOptions);
+        cookieStore.set('employee_user', JSON.stringify(userToStore), cookieOptions);
+      }
 
     } else {
        return {
@@ -111,6 +108,8 @@ export async function logout() {
   const cookieStore = cookies();
   cookieStore.delete('token');
   cookieStore.delete('user');
+  cookieStore.delete('employee_token');
+  cookieStore.delete('employee_user');
   redirect('/login');
 }
 
@@ -186,7 +185,7 @@ export async function createLeaveRequest(prevState: any, formData: FormData) {
     };
   }
 
-  const token = cookies().get('token')?.value;
+  const token = cookies().get('employee_token')?.value;
   if (!token) {
     return { error: 'Authentication required.' };
   }

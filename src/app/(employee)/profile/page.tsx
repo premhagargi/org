@@ -11,8 +11,8 @@ import { LeaveRequestList } from '@/components/leaves/leave-request-list';
 
 async function getEmployeeProfile(): Promise<Employee | null> {
     const cookieStore = cookies();
-    const token = cookieStore.get('token')?.value;
-    const userCookie = cookieStore.get('user')?.value;
+    const token = cookieStore.get('employee_token')?.value;
+    const userCookie = cookieStore.get('employee_user')?.value;
 
     if (!token || !userCookie) {
         redirect('/login');
@@ -20,9 +20,7 @@ async function getEmployeeProfile(): Promise<Employee | null> {
 
     try {
         const user = JSON.parse(userCookie);
-        // The user object from the login response for an employee has an 'id' property.
-        // For admin it has '_id'. We've normalized it to _id in the login action.
-        const employeeId = user?._id;
+        const employeeId = user?.id;
 
         if (!employeeId) {
              console.error('Employee ID not found in cookie');

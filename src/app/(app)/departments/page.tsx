@@ -34,6 +34,7 @@ async function getDepartments(): Promise<Department[]> {
 
 export default async function DepartmentsPage() {
   const departments = await getDepartments();
+  const token = cookies().get('token')?.value;
 
   return (
     <div className="flex flex-col h-full">
@@ -47,7 +48,7 @@ export default async function DepartmentsPage() {
             </p>
           </div>
           <div className="ml-auto flex items-center gap-2">
-            <AddDepartmentButton />
+            <AddDepartmentButton token={token} />
           </div>
         </div>
         <DepartmentList departments={departments} />

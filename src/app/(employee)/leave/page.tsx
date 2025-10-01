@@ -6,17 +6,15 @@ import { redirect } from 'next/navigation';
 
 export default async function LeavePage() {
   const cookieStore = cookies();
-  const userCookie = cookieStore.get('user')?.value;
-  const token = cookieStore.get('token')?.value;
+  const userCookie = cookieStore.get('employee_user')?.value;
+  const token = cookieStore.get('employee_token')?.value;
 
   if (!userCookie || !token) {
     redirect('/login');
   }
 
   const user = JSON.parse(userCookie);
-  // The user object from the login response for an employee has an 'id' property.
-  // For admin it has '_id'. We've normalized it to _id in the login action.
-  const employeeId = user?._id;
+  const employeeId = user?.id;
 
   if (!employeeId) {
     redirect('/login');

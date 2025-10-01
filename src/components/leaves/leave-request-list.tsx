@@ -7,9 +7,11 @@ import { format } from 'date-fns';
 import config from '@/lib/config.json';
 import type { LeaveRequest } from '@/lib/definitions';
 import { UpdateLeaveStatusButtons } from './update-leave-status-buttons';
+import { cn } from "@/lib/utils";
 
-async function getLeaveRequests(employeeId: string): Promise<LeaveRequest[]> {
-  const token = cookies().get('token')?.value;
+async function getLeaveRequests(employeeId: string, isAdmin: boolean): Promise<LeaveRequest[]> {
+  const cookieStore = cookies();
+  const token = isAdmin ? cookieStore.get('token')?.value : cookieStore.get('employee_token')?.value;
 
   if (!token) {
     redirect('/login');
@@ -47,7 +49,7 @@ const statusColorMap: { [key: string]: string } = {
 }
 
 export async function LeaveRequestList({ employeeId, isAdmin }: { employeeId: string, isAdmin: boolean }) {
-  const requests = await getLeaveRequests(employeeId);
+  const requests = await getLeaveRequests(employeeId, isAdmin);
 
   return (
     <Card>
@@ -101,6 +103,3 @@ export async function LeaveRequestList({ employeeId, isAdmin }: { employeeId: st
     </Card>
   );
 }
-
-// Helper needed for conditional classnames
-import { cn } from "@/lib/utils"
