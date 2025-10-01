@@ -51,7 +51,13 @@ export async function login(prevState: any, formData: FormData) {
         path: '/',
       });
       
-      cookieStore.set('user', JSON.stringify(data.user), {
+      // The user object from the API has an 'id' field, not '_id'.
+      // The API response for employee login is {"user": {"id": "..."}}
+      // We will store this and reference it as `user.id` in our server components.
+      // For admin login, the API returns `user._id`.
+      const userToStore = data.user.id ? { ...data.user, _id: data.user.id } : data.user;
+
+      cookieStore.set('user', JSON.stringify(userToStore), {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 60 * 60 * 24, // 1 day

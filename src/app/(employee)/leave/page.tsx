@@ -14,6 +14,8 @@ export default async function LeavePage() {
   }
 
   const user = JSON.parse(userCookie);
+  // The user object from the login response for an employee has an 'id' property.
+  // For admin it has '_id'. We've normalized it to _id in the login action.
   const employeeId = user?._id;
 
   if (!employeeId) {
