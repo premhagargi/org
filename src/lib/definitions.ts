@@ -13,6 +13,24 @@ export type Employee = {
   avatarUrl?: string; 
   salary: number;
   performanceReview?: string;
+  personalDetails?: {
+    address?: {
+      street?: string;
+      city?: string;
+      state?: string;
+      postalCode?: string;
+      country?: string;
+    };
+    languagesSpoken?: string[];
+  };
+  contacts?: {
+    phone?: string[];
+    emergencyContact?: {
+      name?: string;
+      relationship?: string;
+      phone?: string;
+    };
+  };
 };
 
 export type Department = {

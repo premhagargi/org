@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { AppHeader } from '@/components/app-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Mail, Phone, Briefcase, Building, IndianRupee, UserCheck, UserX, FileText } from 'lucide-react';
+import { Mail, Phone, Briefcase, Building, IndianRupee, UserCheck, UserX, FileText, Home, Languages, HeartHandshake, ShieldAlert } from 'lucide-react';
 import { FeedbackSummary } from '@/components/employees/feedback-summary';
 import { cookies } from 'next/headers';
 import config from '@/lib/config.json';
@@ -40,7 +40,7 @@ async function getEmployeeData(id: string): Promise<{employee: Employee | null, 
 
         const employeeResult = await employeeResponse.json();
         const leaveResult = leaveResponse.ok ? await leaveResponse.json() : { leaveRequests: [] };
-
+        
         return {
           employee: employeeResult.employee || null,
           leaveRequests: leaveResult.leaveRequests || []
@@ -58,6 +58,9 @@ export default async function EmployeeProfilePage({ params }: { params: { id: st
   if (!employee) {
     notFound();
   }
+
+  const address = employee.personalDetails?.address;
+  const fullAddress = address ? [address.street, address.city, address.state, address.postalCode, address.country].filter(Boolean).join(', ') : 'Not available';
 
   return (
     <div className="flex flex-col h-full">
@@ -95,18 +98,56 @@ export default async function EmployeeProfilePage({ params }: { params: { id: st
                 </Badge>
               </CardContent>
             </Card>
-            <Card>
+             <Card>
               <CardHeader>
-                <CardTitle>Contact Information</CardTitle>
+                <CardTitle>Contact & Personal Info</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-muted-foreground" />
+                <div className="flex items-start gap-2">
+                  <Mail className="h-4 w-4 text-muted-foreground mt-1" />
                   <span className="text-sm">{employee.email}</span>
+                </div>
+                 <div className="flex items-start gap-2">
+                  <Phone className="h-4 w-4 text-muted-foreground mt-1" />
+                   <span className="text-sm">
+                    {employee.contacts?.phone && employee.contacts.phone.length > 0
+                      ? employee.contacts.phone.join(', ')
+                      : 'Not available'}
+                  </span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Home className="h-4 w-4 text-muted-foreground mt-1" />
+                  <span className="text-sm">{fullAddress}</span>
+                </div>
+                 <div className="flex items-start gap-2">
+                  <Languages className="h-4 w-4 text-muted-foreground mt-1" />
+                  <span className="text-sm">
+                     {employee.personalDetails?.languagesSpoken && employee.personalDetails.languagesSpoken.length > 0
+                      ? employee.personalDetails.languagesSpoken.join(', ')
+                      : 'Not available'}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <ShieldAlert className="h-5 w-5"/>
+                    Emergency Contact
+                  </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                 <div className="flex items-center gap-2">
+                  <UserCheck className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm">{employee.contacts?.emergencyContact?.name || 'N/A'}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <HeartHandshake className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm">{employee.contacts?.emergencyContact?.relationship || 'N/A'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Phone className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">(contact number not available)</span>
+                  <span className="text-sm">{employee.contacts?.emergencyContact?.phone || 'N/A'}</span>
                 </div>
               </CardContent>
             </Card>

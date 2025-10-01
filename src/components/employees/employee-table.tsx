@@ -19,6 +19,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { EditEmployeeForm } from './edit-employee-form';
 
 export function EmployeeTable({ employees }: { employees: Employee[] }) {
   return (
@@ -73,7 +74,7 @@ export function EmployeeTable({ employees }: { employees: Employee[] }) {
                   <DropdownMenuItem asChild>
                     <Link href={`/employees/${employee._id}`}>View Profile</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <EditEmployeeForm employee={employee} />
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>

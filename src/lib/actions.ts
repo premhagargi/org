@@ -44,7 +44,7 @@ export async function login(prevState: any, formData: FormData) {
 
     if (data.token && data.user) {
       const cookieStore = cookies();
-      const userToStore = data.user.id ? { ...data.user, _id: data.user.id } : data.user;
+      const userToStore = data.user;
       
       const cookieOptions = {
         httpOnly: true,
@@ -259,5 +259,101 @@ export async function updateLeaveStatus(formData: FormData) {
   } catch (error) {
      console.error('Update leave status error:', error);
      return { error: 'An unexpected error occurred.' };
+  }
+}
+
+const updateEmployeeSchema = z.object({
+  id: z.string(),
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Invalid email'),
+  position: z.string().min(1, 'Position is required'),
+  street: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  postalCode: z.string().optional(),
+  country: z.string().optional(),
+  languages: z.string().optional(),
+  phone: z.string().optional(),
+  emergencyContactName: z.string().optional(),
+  emergencyContactRelationship: z.string().optional(),
+  emergencyContactPhone: z.string().optional(),
+});
+
+export async function updateEmployee(prevState: any, formData: FormData) {
+  const validatedFields = updateEmployeeSchema.safeParse(Object.fromEntries(formData.entries()));
+
+  if (!validatedFields.success) {
+    console.error('Validation Errors:', validatedFields.error.flatten().fieldErrors);
+    return { error: 'Invalid data submitted. Please check the fields.' };
+  }
+
+  const {
+    id,
+    name,
+    email,
+    position,
+    street,
+    city,
+    state,
+    postalCode,
+    country,
+    languages,
+    phone,
+    emergencyContactName,
+    emergencyContactRelationship,
+    emergencyContactPhone,
+  } = validatedFields.data;
+
+  const token = cookies().get('token')?.value;
+  if (!token) {
+    return { error: 'Authentication required.' };
+  }
+  
+  const requestBody = {
+    name,
+    email,
+    position,
+    personalDetails: {
+      address: {
+        street,
+        city,
+        state,
+        postalCode,
+        country,
+      },
+      languagesSpoken: languages ? languages.split(',').map(lang => lang.trim()) : [],
+    },
+    contacts: {
+      phone: phone ? phone.split(',').map(p => p.trim()) : [],
+      emergencyContact: {
+        name: emergencyContactName,
+        relationship: emergencyContactRelationship,
+        phone: emergencyContactPhone,
+      },
+    },
+  };
+
+  try {
+    const response = await fetch(`${config.apiBaseUrl}/api/employees/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      return { error: data.message || 'Failed to update employee.' };
+    }
+    
+    revalidatePath('/employees');
+    revalidatePath(`/employees/${id}`);
+    return { message: 'Employee updated successfully.' };
+
+  } catch (error) {
+    console.error('Update employee error:', error);
+    return { error: 'An unexpected server error occurred.' };
   }
 }
