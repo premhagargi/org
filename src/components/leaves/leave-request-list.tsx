@@ -9,9 +9,9 @@ import type { LeaveRequest } from '@/lib/definitions';
 import { UpdateLeaveStatusButtons } from './update-leave-status-buttons';
 import { cn } from "@/lib/utils";
 
-async function getLeaveRequests(employeeId: string, isAdmin: boolean): Promise<LeaveRequest[]> {
+async function getLeaveRequestsForAdmin(employeeId: string): Promise<LeaveRequest[]> {
   const cookieStore = cookies();
-  const token = isAdmin ? cookieStore.get('token')?.value : cookieStore.get('employee_token')?.value;
+  const token = cookieStore.get('token')?.value;
 
   if (!token) {
     redirect('/login');
@@ -48,8 +48,23 @@ const statusColorMap: { [key: string]: string } = {
     rejected: 'bg-red-600',
 }
 
-export async function LeaveRequestList({ employeeId, isAdmin }: { employeeId: string, isAdmin: boolean }) {
-  const requests = await getLeaveRequests(employeeId, isAdmin);
+interface LeaveRequestListProps {
+    employeeId?: string;
+    isAdmin: boolean;
+    requests?: LeaveRequest[];
+}
+
+export async function LeaveRequestList({ employeeId, isAdmin, requests: initialRequests }: LeaveRequestListProps) {
+  let requests = initialRequests;
+
+  if (isAdmin && employeeId && !initialRequests) {
+    requests = await getLeaveRequestsForAdmin(employeeId);
+  }
+
+  if (!requests) {
+    requests = [];
+  }
+
 
   return (
     <Card>
@@ -61,6 +76,7 @@ export async function LeaveRequestList({ employeeId, isAdmin }: { employeeId: st
         <Table>
           <TableHeader>
             <TableRow>
+              {isAdmin && <TableHead>Employee</TableHead>}
               <TableHead>Start Date</TableHead>
               <TableHead>End Date</TableHead>
               <TableHead>Reason</TableHead>
@@ -82,7 +98,7 @@ export async function LeaveRequestList({ employeeId, isAdmin }: { employeeId: st
                     {req.status}
                   </Badge>
                 </TableCell>
-                {isAdmin && (
+                {isAdmin && employeeId && (
                   <TableCell className="text-right">
                     {req.status === 'pending' && (
                         <UpdateLeaveStatusButtons employeeId={employeeId} leaveRequestId={req._id} />

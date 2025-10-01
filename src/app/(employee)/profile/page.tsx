@@ -5,11 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Mail, Phone, Briefcase, Building, IndianRupee, UserCheck, UserX, FileText } from 'lucide-react';
 import { cookies } from 'next/headers';
-import type { Employee } from '@/lib/definitions';
+import type { Employee, LeaveRequest } from '@/lib/definitions';
 import config from '@/lib/config.json';
 import { LeaveRequestList } from '@/components/leaves/leave-request-list';
 
-async function getEmployeeProfile(): Promise<Employee | null> {
+async function getEmployeeProfileData(): Promise<{employee: Employee | null; leaveRequests: LeaveRequest[]}> {
     const cookieStore = cookies();
     const token = cookieStore.get('employee_token')?.value;
     const userCookie = cookieStore.get('employee_user')?.value;
@@ -27,32 +27,43 @@ async function getEmployeeProfile(): Promise<Employee | null> {
              redirect('/login');
         }
 
-        const response = await fetch(`${config.apiBaseUrl}/api/employees/${employeeId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            cache: 'no-store',
-        });
+        const headers = { Authorization: `Bearer ${token}` };
 
-        if (!response.ok) {
-            if (response.status === 401) {
-                redirect('/login');
-            }
-            console.error(`Failed to fetch employee ${employeeId}:`, response.statusText);
-            return null;
+        const [employeeResponse, leaveResponse] = await Promise.all([
+          fetch(`${config.apiBaseUrl}/api/employees/${employeeId}`, { headers, cache: 'no-store' }),
+          fetch(`${config.apiBaseUrl}/api/employees/leave-requests/${employeeId}`, { headers, cache: 'no-store' })
+        ]);
+        
+        if (!employeeResponse.ok) {
+            if (employeeResponse.status === 401) redirect('/login');
+            console.error(`Failed to fetch employee ${employeeId}:`, employeeResponse.statusText);
+            // Don't throw here, let the page render an error state
+        }
+        
+        if (!leaveResponse.ok) {
+            if (leaveResponse.status === 401) redirect('/login');
+            console.error('Failed to fetch leave requests:', leaveResponse.statusText);
+            // Don't throw here, let the page render an error state
         }
 
-        const result = await response.json();
-        return result.employee || null;
+        const employeeResult = employeeResponse.ok ? await employeeResponse.json() : null;
+        const leaveResult = leaveResponse.ok ? await leaveResponse.json() : null;
+
+        return {
+            employee: employeeResult?.employee || null,
+            leaveRequests: leaveResult?.leaveRequests || []
+        };
+
     } catch (error) {
-        console.error(`Error fetching employee:`, error);
+        console.error(`Error fetching employee data:`, error);
+        // In case of a total fetch failure (e.g., network error), redirect.
         redirect('/login');
     }
 }
 
 
 export default async function EmployeeProfilePage() {
-  const employee = await getEmployeeProfile();
+  const { employee, leaveRequests } = await getEmployeeProfileData();
 
   if (!employee) {
      return (
@@ -154,7 +165,7 @@ export default async function EmployeeProfilePage() {
             </Card>
           </div>
           <div className="md:col-span-2">
-            <LeaveRequestList employeeId={employee._id} isAdmin={false} />
+            <LeaveRequestList requests={leaveRequests} isAdmin={false} />
           </div>
         </div>
       </main>

@@ -7,47 +7,53 @@ import { Mail, Phone, Briefcase, Building, IndianRupee, UserCheck, UserX, FileTe
 import { FeedbackSummary } from '@/components/employees/feedback-summary';
 import { cookies } from 'next/headers';
 import config from '@/lib/config.json';
-import type { Employee } from '@/lib/definitions';
+import type { Employee, LeaveRequest } from '@/lib/definitions';
 import { LeaveRequestList } from '@/components/leaves/leave-request-list';
 
-async function getEmployee(id: string): Promise<Employee | null> {
+async function getEmployeeData(id: string): Promise<{employee: Employee | null, leaveRequests: LeaveRequest[]}> {
     const cookieStore = cookies();
     const token = cookieStore.get('token')?.value;
 
     if (!token) {
         redirect('/login');
     }
+    
+    const headers = { Authorization: `Bearer ${token}` };
 
     try {
-        const response = await fetch(`${config.apiBaseUrl}/api/employees/${id}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            cache: 'no-store',
-        });
+        const [employeeResponse, leaveResponse] = await Promise.all([
+            fetch(`${config.apiBaseUrl}/api/employees/${id}`, { headers, cache: 'no-store' }),
+            fetch(`${config.apiBaseUrl}/api/employees/leave-requests/${id}`, { headers, cache: 'no-store' })
+        ]);
 
-        if (!response.ok) {
-            if (response.status === 401) {
-                redirect('/login');
-            }
-            if (response.status === 404) {
-                return null;
-            }
-            console.error(`Failed to fetch employee ${id}:`, response.statusText);
-            return null;
+        if (!employeeResponse.ok) {
+            if (employeeResponse.status === 401) redirect('/login');
+            if (employeeResponse.status === 404) return { employee: null, leaveRequests: [] };
+            console.error(`Failed to fetch employee ${id}:`, employeeResponse.statusText);
+            return { employee: null, leaveRequests: [] };
         }
 
-        const result = await response.json();
-        return result.employee || null;
+        if (!leaveResponse.ok) {
+             if (leaveResponse.status === 401) redirect('/login');
+             console.error('Failed to fetch leave requests:', leaveResponse.statusText);
+        }
+
+        const employeeResult = await employeeResponse.json();
+        const leaveResult = leaveResponse.ok ? await leaveResponse.json() : { leaveRequests: [] };
+
+        return {
+          employee: employeeResult.employee || null,
+          leaveRequests: leaveResult.leaveRequests || []
+        };
     } catch (error) {
-        console.error(`Error fetching employee ${id}:`, error);
-        return null;
+        console.error(`Error fetching employee data for ${id}:`, error);
+        return { employee: null, leaveRequests: [] };
     }
 }
 
 
 export default async function EmployeeProfilePage({ params }: { params: { id: string } }) {
-  const employee = await getEmployee(params.id);
+  const { employee, leaveRequests } = await getEmployeeData(params.id);
 
   if (!employee) {
     notFound();
@@ -138,7 +144,7 @@ export default async function EmployeeProfilePage({ params }: { params: { id: st
           </div>
           <div className="md:col-span-2 space-y-6">
             <FeedbackSummary initialFeedback={employee.performanceReview || ''} />
-            <LeaveRequestList employeeId={employee._id} isAdmin={true} />
+            <LeaveRequestList employeeId={employee._id} requests={leaveRequests} isAdmin={true} />
           </div>
         </div>
       </main>
