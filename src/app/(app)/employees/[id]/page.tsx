@@ -9,6 +9,8 @@ import { cookies } from 'next/headers';
 import config from '@/lib/config.json';
 import type { Employee, LeaveRequest } from '@/lib/definitions';
 import { LeaveRequestList } from '@/components/leaves/leave-request-list';
+import { EducationHistoryCard } from '@/components/employees/education-history-card';
+import { WorkExperienceCard } from '@/components/employees/work-experience-card';
 
 async function getEmployeeData(id: string): Promise<{employee: Employee | null, leaveRequests: LeaveRequest[]}> {
     const cookieStore = cookies();
@@ -186,6 +188,8 @@ export default async function EmployeeProfilePage({ params }: { params: { id: st
           <div className="md:col-span-2 space-y-6">
             <FeedbackSummary initialFeedback={employee.performanceReview || ''} />
             <LeaveRequestList employeeId={employee._id} requests={leaveRequests} isAdmin={true} />
+            <WorkExperienceCard experience={employee.personalDetails?.previousWorkExperience} />
+            <EducationHistoryCard education={employee.personalDetails?.educationHistory} />
           </div>
         </div>
       </main>

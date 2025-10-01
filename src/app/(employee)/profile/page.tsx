@@ -8,6 +8,9 @@ import { cookies } from 'next/headers';
 import type { Employee, LeaveRequest } from '@/lib/definitions';
 import config from '@/lib/config.json';
 import { LeaveRequestList } from '@/components/leaves/leave-request-list';
+import { WorkExperienceCard } from '@/components/employees/work-experience-card';
+import { EducationHistoryCard } from '@/components/employees/education-history-card';
+
 
 async function getEmployeeProfileData(): Promise<{employee: Employee | null; leaveRequests: LeaveRequest[]}> {
     const cookieStore = cookies();
@@ -203,8 +206,10 @@ export default async function EmployeeProfilePage() {
               </CardContent>
             </Card>
           </div>
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 space-y-6">
             <LeaveRequestList requests={leaveRequests} isAdmin={false} />
+            <WorkExperienceCard experience={employee.personalDetails?.previousWorkExperience} />
+            <EducationHistoryCard education={employee.personalDetails?.educationHistory} />
           </div>
         </div>
       </main>
