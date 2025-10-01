@@ -121,6 +121,20 @@ const createEmployeeSchema = z.object({
   position: z.string().min(1, 'Position is required'),
   department: z.string().min(1, 'Department is required'),
   salary: z.coerce.number().min(1, 'Salary is required'),
+  dateOfBirth: z.string().optional(),
+  gender: z.string().optional(),
+  maritalStatus: z.string().optional(),
+  nationality: z.string().optional(),
+  street: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  postalCode: z.string().optional(),
+  country: z.string().optional(),
+  languages: z.string().optional(),
+  phone: z.string().optional(),
+  emergencyContactName: z.string().optional(),
+  emergencyContactRelationship: z.string().optional(),
+  emergencyContactPhone: z.string().optional(),
 });
 
 
@@ -132,16 +146,42 @@ export async function createEmployee(prevState: any, formData: FormData) {
   if (!validatedFields.success) {
     console.error('Validation Errors:', validatedFields.error.flatten().fieldErrors);
     return {
-      error: 'Invalid data. Please check all fields.',
+      error: 'Invalid data. Please check all required fields.',
     };
   }
   
-  const { name, email, password, position, department, salary } = validatedFields.data;
+  const { 
+    name, email, password, position, department, salary,
+    dateOfBirth, gender, maritalStatus, nationality,
+    street, city, state, postalCode, country, languages, phone,
+    emergencyContactName, emergencyContactRelationship, emergencyContactPhone
+  } = validatedFields.data;
+  
   const token = cookies().get('token')?.value;
 
   if (!token) {
     return { error: 'Authentication required.' };
   }
+
+  const requestBody = {
+    name, email, password, position, department, salary,
+    personalDetails: {
+      dateOfBirth,
+      gender,
+      maritalStatus,
+      nationality,
+      address: { street, city, state, postalCode, country },
+      languagesSpoken: languages ? languages.split(',').map(lang => lang.trim()) : [],
+    },
+    contacts: {
+      phone: phone ? phone.split(',').map(p => p.trim()) : [],
+      emergencyContact: {
+        name: emergencyContactName,
+        relationship: emergencyContactRelationship,
+        phone: emergencyContactPhone,
+      },
+    },
+  };
 
   try {
     const response = await fetch(`${config.apiBaseUrl}/api/users/create-employee`, {
@@ -150,7 +190,7 @@ export async function createEmployee(prevState: any, formData: FormData) {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({ name, email, password, position, department, salary }),
+      body: JSON.stringify(requestBody),
     });
 
     const data = await response.json();
@@ -267,6 +307,10 @@ const updateEmployeeSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email'),
   position: z.string().min(1, 'Position is required'),
+  dateOfBirth: z.string().optional(),
+  gender: z.string().optional(),
+  maritalStatus: z.string().optional(),
+  nationality: z.string().optional(),
   street: z.string().optional(),
   city: z.string().optional(),
   state: z.string().optional(),
@@ -288,20 +332,10 @@ export async function updateEmployee(prevState: any, formData: FormData) {
   }
 
   const {
-    id,
-    name,
-    email,
-    position,
-    street,
-    city,
-    state,
-    postalCode,
-    country,
-    languages,
-    phone,
-    emergencyContactName,
-    emergencyContactRelationship,
-    emergencyContactPhone,
+    id, name, email, position,
+    dateOfBirth, gender, maritalStatus, nationality,
+    street, city, state, postalCode, country, languages, phone,
+    emergencyContactName, emergencyContactRelationship, emergencyContactPhone,
   } = validatedFields.data;
 
   const token = cookies().get('token')?.value;
@@ -314,6 +348,10 @@ export async function updateEmployee(prevState: any, formData: FormData) {
     email,
     position,
     personalDetails: {
+      dateOfBirth,
+      gender,
+      maritalStatus,
+      nationality,
       address: {
         street,
         city,

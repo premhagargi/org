@@ -1,3 +1,21 @@
+export type Education = {
+  degree: string;
+  institution: string;
+  fieldOfStudy: string;
+  startYear: number;
+  endYear: number;
+  grade?: string;
+};
+
+export type WorkExperience = {
+  companyName: string;
+  position: string;
+  startDate: string;
+  endDate: string;
+  responsibilities: string[];
+  location: string;
+};
+
 export type Employee = {
   _id: string;
   name: string;
@@ -14,6 +32,10 @@ export type Employee = {
   salary: number;
   performanceReview?: string;
   personalDetails?: {
+    dateOfBirth?: string;
+    gender?: string;
+    maritalStatus?: string;
+    nationality?: string;
     address?: {
       street?: string;
       city?: string;
@@ -22,6 +44,8 @@ export type Employee = {
       country?: string;
     };
     languagesSpoken?: string[];
+    educationHistory?: Education[];
+    previousWorkExperience?: WorkExperience[];
   };
   contacts?: {
     phone?: string[];
