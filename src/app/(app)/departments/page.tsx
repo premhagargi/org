@@ -1,9 +1,46 @@
 import { AppHeader } from '@/components/app-header';
 import { DepartmentList } from '@/components/departments/department-list';
 import { AddDepartmentButton } from '@/components/departments/add-department-button';
-import { departments, employees } from '@/lib/data';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import config from '@/lib/config.json';
+import type { Department } from '@/lib/definitions';
 
-export default function DepartmentsPage() {
+async function getDepartments(): Promise<Department[]> {
+  const cookieStore = cookies();
+  const token = cookieStore.get('token')?.value;
+
+  if (!token) {
+    redirect('/login');
+  }
+
+  try {
+    const response = await fetch(`${config.apiBaseUrl}/api/departments`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        redirect('/login');
+      }
+      console.error('Failed to fetch departments:', response.statusText);
+      return [];
+    }
+
+    const result = await response.json();
+    return result.departments || [];
+  } catch (error) {
+    console.error('Error fetching departments:', error);
+    return [];
+  }
+}
+
+export default async function DepartmentsPage() {
+  const departments = await getDepartments();
+
   return (
     <div className="flex flex-col h-full">
       <AppHeader title="Departments" />
@@ -19,7 +56,7 @@ export default function DepartmentsPage() {
             <AddDepartmentButton />
           </div>
         </div>
-        <DepartmentList departments={departments} employees={employees} />
+        <DepartmentList departments={departments} />
       </main>
     </div>
   );

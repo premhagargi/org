@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal, Users } from 'lucide-react';
-import type { Department, Employee } from '@/lib/definitions';
+import type { Department } from '@/lib/definitions';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,24 +12,19 @@ import {
 
 interface DepartmentListProps {
   departments: Department[];
-  employees: Employee[];
 }
 
-export function DepartmentList({ departments, employees }: DepartmentListProps) {
-  const getEmployeeCount = (departmentName: string) => {
-    return employees.filter((emp) => emp.department === departmentName).length;
-  };
-
+export function DepartmentList({ departments }: DepartmentListProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {departments.map((dept) => (
-        <Card key={dept.id}>
-          <CardHeader className="flex flex-row items-start justify-between space-y-0">
+        <Card key={dept._id}>
+          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
              <div>
               <CardTitle className="font-headline">{dept.name}</CardTitle>
-              <CardDescription className="flex items-center gap-1 text-xs">
+              <CardDescription className="flex items-center gap-1 text-xs pt-2">
                 <Users className="h-3 w-3" />
-                {getEmployeeCount(dept.name)} Employees
+                {dept.employeeCount} {dept.employeeCount === 1 ? 'Employee' : 'Employees'}
               </CardDescription>
             </div>
             <DropdownMenu>
@@ -47,7 +42,7 @@ export function DepartmentList({ departments, employees }: DepartmentListProps) 
             </DropdownMenu>
           </CardHeader>
           <CardContent>
-            {/* Can add more department details here */}
+            <p className="text-sm text-muted-foreground">{dept.description}</p>
           </CardContent>
         </Card>
       ))}
