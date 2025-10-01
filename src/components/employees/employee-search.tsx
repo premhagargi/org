@@ -18,7 +18,7 @@ export function EmployeeSearch({ placeholder }: { placeholder: string }) {
       params.delete('q');
     }
     replace(`${pathname}?${params.toString()}`);
-  }, 150);
+  }, 0);
 
   return (
     <div className="relative">
